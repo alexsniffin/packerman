@@ -15,7 +15,6 @@ class PackermanSpec extends FlatSpec with GivenWhenThen {
       .packBy(x => x.one, 0.1)
       .distributionStrategy(x => x)
       .compute()
-      .result
 
     When("")
 
