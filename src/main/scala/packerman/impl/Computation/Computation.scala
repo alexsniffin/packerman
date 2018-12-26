@@ -1,6 +1,6 @@
 package packerman.impl.Computation
 
-import packerman.Pack
+import packerman.impl.Pack
 import packerman.impl.Packed.Packed
 
 trait ComputationMonad[In] {

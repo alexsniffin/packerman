@@ -1,6 +1,6 @@
 package packerman.impl.Group
 
-import packerman.Pack
+import packerman.impl.Pack
 import packerman.impl.Packing.{Packing, PackingMonad}
 
 trait GroupMonad[In] {

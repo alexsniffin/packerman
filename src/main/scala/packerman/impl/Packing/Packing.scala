@@ -1,7 +1,7 @@
 package packerman.impl.Packing
 
-import packerman.Pack
 import packerman.impl.DistributionStrategy.{DistributionStrategy, DistributionStrategyMonad}
+import packerman.impl.Pack
 
 trait PackingMonad[In] {
   def packBy[POut](fn: Pack.Packing[In, POut], limit: Double): DistributionStrategyMonad[In]

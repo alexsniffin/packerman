@@ -1,7 +1,7 @@
 package packerman.impl.DistributionStrategy
 
-import packerman.Pack
 import packerman.impl.Computation.{Computation, ComputationMonad}
+import packerman.impl.Pack
 
 trait DistributionStrategyMonad[In] {
   def distributionStrategy(fn: Pack.Distribution[In]): ComputationMonad[In]
