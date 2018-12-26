@@ -4,13 +4,13 @@ import packerman.Pack
 import packerman.impl.Packing.{Packing, PackingMonad}
 
 trait GroupMonad[In] {
-  def groupBy[OutputType](fn: Pack.Grouping[In, OutputType]): PackingMonad[In]
+  def groupBy[GOut](fn: Pack.Grouping[In, GOut]): PackingMonad[In]
 }
 
-class Group[In](In: Pack[In]) extends GroupMonad[In] {
-  def groupBy[OutputType](fn: Pack.Grouping[In, OutputType]): PackingMonad[In] = Packing(In)(fn)
+class Group[In](pack: Pack[In]) extends GroupMonad[In] {
+  def groupBy[GOut](fn: Pack.Grouping[In, GOut]): PackingMonad[In] = Packing(pack.copy(groupFn = Some(fn)))
 }
 
 object Group {
-  def apply[In](In: Pack[In]): Group[In] = new Group[In](In)
+  def apply[In](pack: Pack[In]): Group[In] = new Group[In](pack)
 }

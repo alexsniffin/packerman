@@ -3,12 +3,15 @@ package packerman
 import packerman.impl.Group.{Group, GroupMonad}
 
 trait PackProperties[In] {
-  val collection: Seq[In]
+  val collection: Option[Seq[In]]
 }
 
-class Pack[In](inputCollection: Seq[In]) extends PackProperties[In] {
-  lazy val collection: Seq[In] = inputCollection
-}
+case class Pack[In](
+   collection: Option[Seq[In]],
+   groupFn: Option[Pack.Grouping[In, Any]] = None,
+   packFn: Option[Pack.Grouping[In, Any]] = None,
+   distributeFn: Option[Pack.Distribution[In]] = None)
+  extends PackProperties[In]
 
 object Pack {
   type LambdaVariant[-In, +Out] = In => Out
@@ -19,12 +22,12 @@ object Pack {
   
   type Distribution[Distribute] = Distribute => Distribute
 
-  def apply[In](InCollection: Seq[In]): Pack[In] = new Pack[In](InCollection)
+  def apply[In](inCollection: Seq[In]): Pack[In] = new Pack[In](Some(inCollection))
 }
 
 object Packerman {
   def apply[In](inputCollection: Seq[In]): GroupMonad[In] = {
-    val input: Pack[In] = new Pack[In](inputCollection)
+    val input: Pack[In] = Pack[In](inputCollection)
 
     Group[In](input)
   }
