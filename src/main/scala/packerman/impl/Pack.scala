@@ -3,14 +3,14 @@ package packerman.impl
 trait PackProperties[In] {
   val collection: Option[Seq[In]]
   val groupFn: Option[Pack.Grouping[In, Any]]
-  val packFn: Option[Pack.Grouping[In, Any]]
+  val packFn: Option[Pack.Packing[In, Any]]
   val distributeFn: Option[Pack.Distribution[In]]
 }
 
 case class Pack[In](
     collection: Option[Seq[In]],
     groupFn: Option[Pack.Grouping[In, Any]] = None,
-    packFn: Option[Pack.Grouping[In, Any]] = None,
+    packFn: Option[Pack.Packing[In, Any]] = None,
     distributeFn: Option[Pack.Distribution[In]] = None)
   extends PackProperties[In]
 
