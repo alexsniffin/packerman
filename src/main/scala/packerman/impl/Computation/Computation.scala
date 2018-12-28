@@ -2,7 +2,10 @@ package packerman.impl.Computation
 
 import packerman.impl.Pack
 
+import scala.util.{Failure, Success, Try}
+
 sealed class Error(reason: String)
+case class ThrowableError(reason: String) extends Error(reason: String)
 case class UnknownError(reason: String) extends Error(reason: String)
 case class MissingParametersError(reason: String) extends Error(reason: String)
 
@@ -14,7 +17,10 @@ class Computation[In](pack: Pack[In]) extends ComputationMonad[In] {
   def compute(): Either[Seq[In], Error] = pack match {
     case Pack(_, groupFn, packFn, distributeFn) if groupFn.isEmpty || packFn.isEmpty || distributeFn.isEmpty =>
       Right(MissingParametersError("Required parameters are missing from pack"))
-    case Pack(input, groupFn, packFn, distributeFn) => Left(maxBinPacking(input.get, groupFn.get, packFn.get, distributeFn.get))
+    case Pack(input, groupFn, packFn, distributeFn) => Try(maxBinPacking(input.get, groupFn.get, packFn.get, distributeFn.get)) {
+      case Success(result: Seq[In]) => Left(result)
+      case Failure(fail) => Right(ThrowableError(fail.getMessage))
+    }
     case _ => Right(UnknownError("Unknown error"))
   }
 
@@ -41,6 +47,7 @@ class Computation[In](pack: Pack[In]) extends ComputationMonad[In] {
     case i: Long => i.longValue()
     case i: Short => i.shortValue()
     case i: Float => i.floatValue()
+    case _ => throw new NumberFormatException("Invalid type for packing, must be a numeric type")
   }.sum
 }
 
