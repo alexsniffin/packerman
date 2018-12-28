@@ -17,7 +17,7 @@ class Computation[In](pack: Pack[In]) extends ComputationMonad[In] {
   def compute(): Either[Seq[In], Error] = pack match {
     case Pack(_, groupFn, packFn, distributeFn) if groupFn.isEmpty || packFn.isEmpty || distributeFn.isEmpty =>
       Right(MissingParametersError("Required parameters are missing from pack"))
-    case Pack(input, groupFn, packFn, distributeFn) => Try(maxBinPacking(input.get, groupFn.get, packFn.get, distributeFn.get)) {
+    case Pack(input, groupFn, packFn, distributeFn) => Try(maxBinPacking(input.get, groupFn.get, packFn.get, distributeFn.get)) match {
       case Success(result: Seq[In]) => Left(result)
       case Failure(fail) => Right(ThrowableError(fail.getMessage))
     }
@@ -26,15 +26,16 @@ class Computation[In](pack: Pack[In]) extends ComputationMonad[In] {
 
   def maxBinPacking(seq: Seq[In], groupFn: Pack.Grouping[In, Any], packFn: Pack.Packing[In, Any],
                     distributeFn: Pack.Distribution[In]): Seq[In] = {
-    val sumOfPackValue = sumNumericToDouble(seq.map(packFn))
+    val sumOfPackValue: Double = sumNumericToDouble(seq.map(packFn))
 
-    val grouped = seq.groupBy(groupFn)
+    val grouped: Map[Any, Seq[In]] = seq.groupBy(groupFn)
 
-    val packed = grouped.foreach(x => {
-      val sumOfGroup = sumNumericToDouble(x._2)
-
-      //val
-    })
+    val groupRatios = grouped.map {
+      case (k: Any, v: Seq[In]) => {
+        val sumOfGroup = sumNumericToDouble(v.map(packFn))
+        (k, sumOfGroup / sumOfPackValue)
+      }
+    }
 
     //val distributed = //packed.map(distributeFn)
 
@@ -47,7 +48,7 @@ class Computation[In](pack: Pack[In]) extends ComputationMonad[In] {
     case i: Long => i.longValue()
     case i: Short => i.shortValue()
     case i: Float => i.floatValue()
-    case _ => throw new NumberFormatException("Invalid type for packing, must be a numeric type")
+    //case _ => throw new NumberFormatException("Invalid type for packing, must be a numeric type")
   }.sum
 }
 
