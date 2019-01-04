@@ -1,6 +1,7 @@
 package packerman
 
 import org.scalatest.{FlatSpec, GivenWhenThen}
+import packerman.impl.Equal
 
 class PackermanSpec extends FlatSpec with GivenWhenThen {
   info("Running PackermanSpec")
@@ -12,8 +13,8 @@ class PackermanSpec extends FlatSpec with GivenWhenThen {
 
     val packed = Packerman(List(Test(1, "ok", "no")))
       .groupBy(x => x.two)
-      .packBy(x => x.one, 0.1)
-      .distributionStrategy(x => x)
+      .packBy(x => x.one)
+      .distributionStrategy(Equal(0.5))
       .compute()
 
     When("")

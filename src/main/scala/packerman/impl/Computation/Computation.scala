@@ -1,6 +1,6 @@
 package packerman.impl.Computation
 
-import packerman.impl.Pack
+import packerman.impl.{DistributionAlgorithm, Pack}
 
 import scala.util.{Failure, Success, Try}
 
@@ -25,7 +25,7 @@ class Computation[In, GOut, POut <: Double](pack: Pack[In, GOut, POut]) extends 
   }
 
   def maxBinPacking(seq: Seq[In], groupFn: Pack.Grouping[In, GOut], packFn: Pack.Packing[In, POut],
-                    distributeFn: Pack.Distribution[In]): Seq[In] = {
+                    distributeAlgorithm: DistributionAlgorithm): Seq[In] = {
     val sumOfPackValue = seq.map(packFn).reduce[Double](_ + _)
 
     val grouped: Map[GOut, Seq[In]] = seq.groupBy(groupFn)
