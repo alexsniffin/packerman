@@ -14,7 +14,7 @@ class PackermanSpec extends FlatSpec with GivenWhenThen {
     val packed = Packerman(List(Test(1, "ok", "no")))
       .groupBy(x => x.two)
       .packBy(x => x.one)
-      .distributionStrategy(UniformDistribution(0.5))
+      .distributionStrategy(UniformDistribution(weighted = true, 0.5))
       .compute()
 
     When("")

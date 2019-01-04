@@ -1,5 +1,10 @@
 package packerman.impl
 
+sealed class Error(reason: String)
+case class ThrowableError(reason: String) extends Error(reason: String)
+case class UnknownError(reason: String) extends Error(reason: String)
+case class MissingParametersError(reason: String) extends Error(reason: String)
+
 sealed class DistributionAlgorithm(weighted: Boolean)
 case class UniformDistribution(weighted: Boolean, limit: Double) extends DistributionAlgorithm(weighted: Boolean)
 
