@@ -1,7 +1,7 @@
 package packerman.impl
 
-sealed class DistributionAlgorithm
-case class Equal(limit: Double) extends DistributionAlgorithm
+sealed class DistributionAlgorithm(weighted: Boolean)
+case class UniformDistribution(weighted: Boolean, limit: Double) extends DistributionAlgorithm(weighted: Boolean)
 
 trait PackProperties[In] {
   val collection: Option[Seq[In]]
