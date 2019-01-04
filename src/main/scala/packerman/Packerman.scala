@@ -5,7 +5,7 @@ import packerman.impl.Pack
 
 object Packerman {
   def apply[In](inputCollection: Seq[In]): GroupMonad[In] = {
-    val input: Pack[In] = Pack[In](inputCollection)
+    val input: Pack[In, _, _ <: Double] = Pack[In](inputCollection)
 
     Group[In](input)
   }

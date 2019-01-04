@@ -2,15 +2,15 @@ package packerman.impl
 
 trait PackProperties[In] {
   val collection: Option[Seq[In]]
-  val groupFn: Option[Pack.Grouping[In, Any]]
-  val packFn: Option[Pack.Packing[In, Any]]
+  val groupFn: Option[Pack.Grouping[In, _]]
+  val packFn: Option[Pack.Packing[In, _]]
   val distributeFn: Option[Pack.Distribution[In]]
 }
 
-case class Pack[In](
+case class Pack[In, GOut, POut <: Double](
     collection: Option[Seq[In]],
-    groupFn: Option[Pack.Grouping[In, Any]] = None,
-    packFn: Option[Pack.Packing[In, Any]] = None,
+    groupFn: Option[Pack.Grouping[In, GOut]] = None,
+    packFn: Option[Pack.Packing[In, POut]] = None,
     distributeFn: Option[Pack.Distribution[In]] = None)
   extends PackProperties[In]
 
@@ -23,6 +23,6 @@ object Pack {
 
   type Distribution[Distribute] = Distribute => Distribute
 
-  def apply[In](inCollection: Seq[In]): Pack[In] = new Pack[In](Some(inCollection))
+  def apply[In](inCollection: Seq[In]): Pack[In, _, _ <: Double] = Pack[In, Any, Double](Some(inCollection))
 }
 

@@ -13,7 +13,7 @@ trait ComputationMonad[In] {
   def compute(): Either[Seq[In], Error]
 }
 
-class Computation[In](pack: Pack[In]) extends ComputationMonad[In] {
+class Computation[In, GOut, POut <: Double](pack: Pack[In, GOut, POut]) extends ComputationMonad[In] {
   def compute(): Either[Seq[In], Error] = pack match {
     case Pack(_, groupFn, packFn, distributeFn) if groupFn.isEmpty || packFn.isEmpty || distributeFn.isEmpty =>
       Right(MissingParametersError("Required parameters are missing from pack"))
@@ -24,15 +24,15 @@ class Computation[In](pack: Pack[In]) extends ComputationMonad[In] {
     case _ => Right(UnknownError("Unknown error"))
   }
 
-  def maxBinPacking(seq: Seq[In], groupFn: Pack.Grouping[In, Any], packFn: Pack.Packing[In, Any],
+  def maxBinPacking(seq: Seq[In], groupFn: Pack.Grouping[In, GOut], packFn: Pack.Packing[In, POut],
                     distributeFn: Pack.Distribution[In]): Seq[In] = {
-    val sumOfPackValue: Double = sumNumericToDouble(seq.map(packFn))
+    val sumOfPackValue = seq.map(packFn).reduce[Double](_ + _)
 
-    val grouped: Map[Any, Seq[In]] = seq.groupBy(groupFn)
+    val grouped: Map[GOut, Seq[In]] = seq.groupBy(groupFn)
 
     val groupRatios = grouped.map {
-      case (k: Any, v: Seq[In]) => {
-        val sumOfGroup = sumNumericToDouble(v.map(packFn))
+      case (k: GOut, v: Seq[In]) => {
+        val sumOfGroup = v.map(packFn).reduce[Double](_ + _)
         (k, sumOfGroup / sumOfPackValue)
       }
     }
@@ -41,17 +41,8 @@ class Computation[In](pack: Pack[In]) extends ComputationMonad[In] {
 
     List[In]()
   }
-
-  def sumNumericToDouble(seq: Seq[Any]): Double = seq.map {
-    case i: Int => i.intValue()
-    case i: Double => i.doubleValue()
-    case i: Long => i.longValue()
-    case i: Short => i.shortValue()
-    case i: Float => i.floatValue()
-    //case _ => throw new NumberFormatException("Invalid type for packing, must be a numeric type")
-  }.sum
 }
 
 object Computation {
-  def apply[In](pack: Pack[In]): Computation[In] = new Computation[In](pack)
+  def apply[In, GOut, POut <: Double](pack: Pack[In, GOut, POut]): Computation[In, GOut, POut] = new Computation[In, GOut, POut](pack)
 }

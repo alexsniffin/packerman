@@ -5,7 +5,7 @@ import org.scalatest.{FlatSpec, GivenWhenThen}
 class PackermanSpec extends FlatSpec with GivenWhenThen {
   info("Running PackermanSpec")
 
-  case class Test(one: Int, two: String, three: String)
+  case class Test(one: Double, two: String, three: String)
 
   "" should "" in {
     Given("")

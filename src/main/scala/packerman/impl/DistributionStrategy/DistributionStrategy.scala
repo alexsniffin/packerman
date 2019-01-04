@@ -7,10 +7,11 @@ trait DistributionStrategyMonad[In] {
   def distributionStrategy(fn: Pack.Distribution[In]): ComputationMonad[In]
 }
 
-class DistributionStrategy[In](pack: Pack[In]) extends DistributionStrategyMonad[In] {
-  def distributionStrategy(fn: Pack.Distribution[In]): ComputationMonad[In] = Computation[In](pack.copy(distributeFn = Some(fn)))
+class DistributionStrategy[In, GOut, POut <: Double](pack: Pack[In, GOut, POut]) extends DistributionStrategyMonad[In] {
+  def distributionStrategy(fn: Pack.Distribution[In]): ComputationMonad[In] =
+    Computation[In, GOut, POut](pack.copy[In, GOut, POut](distributeFn = Some(fn)))
 }
 
 object DistributionStrategy {
-  def apply[In](pack: Pack[In]): DistributionStrategy[In] = new DistributionStrategy[In](pack)
+  def apply[In, GOut, POut <: Double](pack: Pack[In, GOut, POut]): DistributionStrategy[In, GOut, POut] = new DistributionStrategy[In, GOut, POut](pack)
 }

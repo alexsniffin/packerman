@@ -4,13 +4,14 @@ import packerman.impl.DistributionStrategy.{DistributionStrategy, DistributionSt
 import packerman.impl.Pack
 
 trait PackingMonad[In] {
-  def packBy[POut](fn: Pack.Packing[In, POut], limit: Double): DistributionStrategyMonad[In]
+  def packBy[POut <: Double](fn: Pack.Packing[In, POut], limit: Double): DistributionStrategyMonad[In]
 }
 
-class Packing[In](pack: Pack[In]) extends PackingMonad[In] {
-  def packBy[POut](fn: Pack.Packing[In, POut], limit: Double): DistributionStrategyMonad[In] = DistributionStrategy(pack.copy(packFn = Some(fn)))
+class Packing[In, GOut](pack: Pack[In, GOut, _ <: Double]) extends PackingMonad[In] {
+  def packBy[POut <: Double](fn: Pack.Packing[In, POut], limit: Double): DistributionStrategyMonad[In] =
+    DistributionStrategy(pack.copy[In, GOut, POut](packFn = Some(fn)))
 }
 
 object Packing {
-  def apply[In](pack: Pack[In]): Packing[In] = new Packing[In](pack)
+  def apply[In, GOut](pack: Pack[In, GOut, _ <: Double]): Packing[In, GOut] = new Packing[In, GOut](pack)
 }
