@@ -41,7 +41,7 @@ object Computation {
       case UniformDistribution(weighted, limit) => uniformDistribution(weighted, limit, sumOfPackValue, groups, groupRatios)
     }
 
-    List[In]()
+    distributed.values.flatten.toSeq
   }
 
   def uniformDistribution[In, GOut](
