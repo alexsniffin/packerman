@@ -7,7 +7,7 @@ import packerman.impl._
 import scala.annotation.tailrec
 import scala.util.{Failure, Success, Try}
 
-sealed case class InputMapper[In, POut <: Double](input: In, updatedPackingProp: POut)
+sealed case class ComputedResult[In, POut <: Double](input: In, updatedPackingProp: POut)
 
 trait ComputationMonad[In] {
   def compute(): Either[Seq[In], Error]
@@ -32,13 +32,13 @@ object Computation {
       seq: Seq[In],
       groupFn: Pack.Grouping[In, GOut],
       packFn: Pack.Packing[In, POut],
-      distributeAlgorithm: DistributionAlgorithm): Seq[InputMapper[In, POut]] = {
+      distributeAlgorithm: DistributionAlgorithm): Seq[ComputedResult[In, POut]] = {
 
-    val inputMappedSeq = seq.map(in => InputMapper(in, packFn.apply(in)))
+    val inputMappedSeq = seq.map(in => ComputedResult(in, packFn.apply(in)))
 
     val sumOfPackValue = seq.map(packFn).reduce[Double](_ + _)
 
-    val groups: Map[GOut, Seq[InputMapper[In, POut]]] = inputMappedSeq.groupBy(x => groupFn(x.input))
+    val groups: Map[GOut, Seq[ComputedResult[In, POut]]] = inputMappedSeq.groupBy(x => groupFn(x.input))
 
     val distributed = distributeAlgorithm match {
       case UniformDistribution(weighted, limit) => uniformDistribution(weighted, limit, packFn, sumOfPackValue, groups)
@@ -53,12 +53,12 @@ object Computation {
       limit: Double,
       packFn: Pack.Packing[In, POut],
       sumOfPackValue: Double,
-      groups: Map[GOut, Seq[InputMapper[In, POut]]]): Map[GOut, Seq[InputMapper[In, POut]]] = {
+      groups: Map[GOut, Seq[ComputedResult[In, POut]]]): Map[GOut, Seq[ComputedResult[In, POut]]] = {
 
     @tailrec
     def reduceAndCompute(
-        notLimited: Option[Map[GOut, Seq[InputMapper[In, POut]]]],
-        limited: Option[Map[GOut, Seq[InputMapper[In, POut]]]] = None): Option[Map[GOut, Seq[InputMapper[In, POut]]]] = {
+                          notLimited: Option[Map[GOut, Seq[ComputedResult[In, POut]]]],
+                          limited: Option[Map[GOut, Seq[ComputedResult[In, POut]]]] = None): Option[Map[GOut, Seq[ComputedResult[In, POut]]]] = {
       if (notLimited.isEmpty || notLimited.get.size == 1) return Some(notLimited.get ++ limited.get)
 
       val limitAmt = limit * sumOfPackValue
