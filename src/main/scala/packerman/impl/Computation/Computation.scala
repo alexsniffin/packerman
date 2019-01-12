@@ -33,7 +33,6 @@ object Computation {
       groupFn: Pack.Grouping[In, GOut],
       packFn: Pack.Packing[In, POut],
       distributeAlgorithm: DistributionAlgorithm): Seq[ComputedResult[In, POut]] = {
-
     val inputMappedSeq = seq.map(in => ComputedResult(in, packFn.apply(in)))
 
     val sumOfPackValue = seq.map(packFn).reduce[Double](_ + _)
@@ -54,11 +53,10 @@ object Computation {
       packFn: Pack.Packing[In, POut],
       sumOfPackValue: Double,
       groups: Map[GOut, Seq[ComputedResult[In, POut]]]): Map[GOut, Seq[ComputedResult[In, POut]]] = {
-
     @tailrec
     def reduceAndCompute(
-                          notLimited: Option[Map[GOut, Seq[ComputedResult[In, POut]]]],
-                          limited: Option[Map[GOut, Seq[ComputedResult[In, POut]]]] = None): Option[Map[GOut, Seq[ComputedResult[In, POut]]]] = {
+        notLimited: Option[Map[GOut, Seq[ComputedResult[In, POut]]]],
+        limited: Option[Map[GOut, Seq[ComputedResult[In, POut]]]] = None): Option[Map[GOut, Seq[ComputedResult[In, POut]]]] = {
       if (notLimited.isEmpty || notLimited.get.size == 1) return Some(notLimited.get ++ limited.get)
 
       val limitAmt = limit * sumOfPackValue
