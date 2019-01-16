@@ -42,5 +42,6 @@ class GroupSpec extends FlatSpec with GivenWhenThen {
 
     Then("the pack object should be different than the original")
     assert(packing.pack != pack)
+    assert(packing.pack.groupFn.isDefined)
   }
 }
