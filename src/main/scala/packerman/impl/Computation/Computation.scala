@@ -13,7 +13,7 @@ trait ComputationMonad[In] {
   def compute(): Either[Seq[In], Error]
 }
 
-class Computation[In, GOut, POut <: Double](pack: Pack[In, GOut, POut]) extends ComputationMonad[In] {
+class Computation[In, GOut, POut <: Double](val pack: Pack[In, GOut, POut]) extends ComputationMonad[In] {
   def compute(): Either[Seq[In], Error] = pack match {
     case Pack(_, groupFn, packFn, distributeFn) if groupFn.isEmpty || packFn.isEmpty || distributeFn.isEmpty =>
       Right(MissingParametersError("Required parameters are missing from pack"))

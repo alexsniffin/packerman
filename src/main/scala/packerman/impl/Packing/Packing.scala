@@ -7,7 +7,7 @@ trait PackingMonad[In] {
   def packBy[POut <: Double](fn: Pack.Packing[In, POut]): DistributionStrategyMonad[In]
 }
 
-class Packing[In, GOut](pack: Pack[In, GOut, _ <: Double]) extends PackingMonad[In] {
+class Packing[In, GOut](val pack: Pack[In, GOut, _ <: Double]) extends PackingMonad[In] {
   def packBy[POut <: Double](fn: Pack.Packing[In, POut]): DistributionStrategyMonad[In] =
     DistributionStrategy(pack.copy[In, GOut, POut](packFn = Some(fn)))
 }

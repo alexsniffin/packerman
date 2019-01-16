@@ -1,25 +1,19 @@
 package packerman
 
 import org.scalatest.{FlatSpec, GivenWhenThen}
-import packerman.impl.UniformDistribution
+import packerman.impl.Group.{Group, GroupMonad}
 
 class PackermanSpec extends FlatSpec with GivenWhenThen {
   info("Running PackermanSpec")
 
-  case class Test(one: Double, two: String)
+  "apply" should "return a group monad" in {
+    Given("a seq")
+    val seq = Seq()
 
-  "" should "" in {
-    Given("")
+    When("creating a new instance of packerman with apply")
+    val groupMonad = Packerman.apply(seq)
 
-    val packed = Packerman(List(Test(1, "group1"), Test(1, "group1"), Test(1, "group2")))
-      .groupBy(x => x.two)
-      .packBy(x => x.one)
-      .distributionStrategy(UniformDistribution(weighted = true, 0.5))
-      .compute()
-
-    When("")
-
-    Then("")
-    assert(true)
+    Then("apply should return a group monad")
+    assert(groupMonad.isInstanceOf[GroupMonad[_]])
   }
 }

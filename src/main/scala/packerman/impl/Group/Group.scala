@@ -7,7 +7,7 @@ trait GroupMonad[In] {
   def groupBy[GOut](fn: Pack.Grouping[In, GOut]): PackingMonad[In]
 }
 
-class Group[In](pack: Pack[In, _, _ <: Double]) extends GroupMonad[In] {
+class Group[In](val pack: Pack[In, _, _ <: Double]) extends GroupMonad[In] {
   def groupBy[GOut](fn: Pack.Grouping[In, GOut]): PackingMonad[In] =
     Packing(pack.copy[In, GOut, Double](groupFn = Some(fn)))
 }
