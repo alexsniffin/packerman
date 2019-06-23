@@ -1,14 +1,14 @@
 package packerman.impl.Group
 
 import packerman.impl.Pack
-import packerman.impl.Packing.{Packing, PackingMonad}
+import packerman.impl.Packing.{Packing, PackingProps}
 
-trait GroupMonad[In] {
-  def groupBy[GOut](fn: Pack.Grouping[In, GOut]): PackingMonad[In]
+trait GroupProps[In] {
+  def groupBy[GOut](fn: Pack.Grouping[In, GOut]): PackingProps[In]
 }
 
-class Group[In](val pack: Pack[In, _, _ <: Double]) extends GroupMonad[In] {
-  def groupBy[GOut](fn: Pack.Grouping[In, GOut]): PackingMonad[In] =
+class Group[In](val pack: Pack[In, _, _ <: Double]) extends GroupProps[In] {
+  def groupBy[GOut](fn: Pack.Grouping[In, GOut]): PackingProps[In] =
     Packing(pack.copy[In, GOut, Double](groupFn = Some(fn)))
 }
 

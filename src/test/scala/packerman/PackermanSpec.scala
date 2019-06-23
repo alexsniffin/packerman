@@ -1,7 +1,7 @@
 package packerman
 
 import org.scalatest.{FlatSpec, GivenWhenThen}
-import packerman.impl.Group.{Group, GroupMonad}
+import packerman.impl.Group.GroupProps
 
 class PackermanSpec extends FlatSpec with GivenWhenThen {
   info("Running PackermanSpec")
@@ -11,9 +11,9 @@ class PackermanSpec extends FlatSpec with GivenWhenThen {
     val seq = Seq()
 
     When("creating a new instance of packerman with apply")
-    val groupMonad = Packerman.apply(seq)
+    val groupMonad = PackermanEngine.apply(seq)
 
     Then("apply should return a group monad")
-    assert(groupMonad.isInstanceOf[GroupMonad[_]])
+    assert(groupMonad.isInstanceOf[GroupProps[_]])
   }
 }

@@ -1,14 +1,18 @@
 package packerman.impl
 
-sealed class Error(reason: String)
-case class ThrowableError(reason: String) extends Error(reason: String)
-case class UnknownError(reason: String) extends Error(reason: String)
-case class MissingParametersError(reason: String) extends Error(reason: String)
+sealed class Error(val reason: String)
+
+case class ThrowableError(override val reason: String) extends Error(reason: String)
+
+case class UnknownError(override val reason: String) extends Error(reason: String)
+
+case class MissingParametersError(override val reason: String) extends Error(reason: String)
 
 sealed class DistributionAlgorithm(weighted: Boolean)
+
 case class UniformDistribution(weighted: Boolean, limit: Double) extends DistributionAlgorithm(weighted: Boolean)
 
-trait PackProperties[In] {
+trait PackProps[In] {
   val collection: Option[Seq[In]]
   val groupFn: Option[Pack.Grouping[In, _]]
   val packFn: Option[Pack.Packing[In, _]]
@@ -20,7 +24,7 @@ case class Pack[In, GOut, POut <: Double](
     groupFn: Option[Pack.Grouping[In, GOut]] = None,
     packFn: Option[Pack.Packing[In, POut]] = None,
     distributeAlgorithm: Option[DistributionAlgorithm] = None)
-  extends PackProperties[In]
+    extends PackProps[In]
 
 object Pack {
   type LambdaVariant[-In, +Out] = In => Out
