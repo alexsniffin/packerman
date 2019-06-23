@@ -27,7 +27,7 @@ val packerman = PackermanEngine(collection)
   .distributionStrategy(UniformDistribution(true, .5))
   .compute()
 
-val output = com.alexsniffin.packerman match {
+val output = packerman match {
   case Right(result) => result
   case l @ Left(err) => l // handle error
 }
