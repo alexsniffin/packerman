@@ -1,16 +1,6 @@
 package packerman.impl
 
-sealed class Error(val reason: String)
-
-case class ThrowableError(override val reason: String) extends Error(reason: String)
-
-case class UnknownError(override val reason: String) extends Error(reason: String)
-
-case class MissingParametersError(override val reason: String) extends Error(reason: String)
-
-sealed class DistributionAlgorithm(weighted: Boolean)
-
-case class UniformDistribution(weighted: Boolean, limit: Double) extends DistributionAlgorithm(weighted: Boolean)
+import packerman.impl.Computation.DistributionAlgorithm
 
 trait PackProps[In] {
   val collection: Option[Seq[In]]

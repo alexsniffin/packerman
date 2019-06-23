@@ -1,7 +1,6 @@
 package packerman.impl.Computation
 
-import java.security.InvalidAlgorithmParameterException
-
+import packerman.impl.Error._
 import packerman.impl._
 
 import scala.annotation.tailrec
@@ -32,19 +31,21 @@ object Computation {
       seq: Seq[In],
       groupFn: Pack.Grouping[In, GOut],
       packFn: Pack.Packing[In, POut],
-      distributeAlgorithm: DistributionAlgorithm): Seq[ComputedResult[In, POut]] = {
+      distributeAlgorithm: DistributionAlgorithm): Either[Error, Seq[ComputedResult[In, POut]]] = {
     val inputMappedSeq = seq.map(in => ComputedResult(in, packFn.apply(in)))
 
     val sumOfPackValue = seq.map(packFn).reduce[Double](_ + _)
 
     val groups: Map[GOut, Seq[ComputedResult[In, POut]]] = inputMappedSeq.groupBy(x => groupFn(x.input))
 
-    val distributed = distributeAlgorithm match {
-      case UniformDistribution(weighted, limit) => uniformDistribution(weighted, limit, packFn, sumOfPackValue, groups)
-      case _ => throw new InvalidAlgorithmParameterException("Invalid distribution algorithm specified")
+    distributeAlgorithm match {
+      case UniformDistribution(weighted, limit) =>
+        uniformDistribution(weighted, limit, packFn, sumOfPackValue, groups) match {
+          case Right(result) => Right(result.values.flatten.toSeq)
+          case Left(err) => Left(err)
+        }
+      case _ => Left(InvalidAlgorithmError("Invalid distribution algorithm specified"))
     }
-
-    distributed.values.flatten.toSeq
   }
 
   private[packerman] def uniformDistribution[In, GOut, POut <: Double](
@@ -52,7 +53,9 @@ object Computation {
       limit: Double,
       packFn: Pack.Packing[In, POut],
       sumOfPackValue: Double,
-      groups: Map[GOut, Seq[ComputedResult[In, POut]]]): Map[GOut, Seq[ComputedResult[In, POut]]] = {
+      groups: Map[GOut, Seq[ComputedResult[In, POut]]]): Either[Error, Map[GOut, Seq[ComputedResult[In, POut]]]] = {
+    if (groups.size * limit < 1) Left(InvalidAlgorithmParameterError(s"Limit parameter is too low, minimal limit: ${(1 / groups.size).toDouble}"))
+
     @tailrec
     def reduceAndCompute(
         notLimited: Option[Map[GOut, Seq[ComputedResult[In, POut]]]],
@@ -62,7 +65,7 @@ object Computation {
       val limitAmt = limit * sumOfPackValue
 
       val groupSums: Map[GOut, Double] = groups.map {
-        case (k, v: Seq[In]) =>
+        case (k, v) =>
           val sumOfGroup: Double = v.map(group => packFn(group.input)).reduce[Double](_ + _)
 
           (k, sumOfGroup)
@@ -72,7 +75,7 @@ object Computation {
         case (_, v: Double) => v - limitAmt
       }.sum
 
-      val updatedLimited = Some(groupSums.filter(_._2 > limitAmt).map {
+      val updatedLimited: Option[Map[GOut, Seq[ComputedResult[In, POut]]]] = Some(groupSums.filter(_._2 > limitAmt).map {
         case (k, v) =>
           val amtOver = v - limitAmt
           val amtEa = amtOver / v
@@ -80,7 +83,7 @@ object Computation {
           (k, groups(k).map(i => i.copy(updatedPackingProp = (i.updatedPackingProp - amtEa).asInstanceOf[POut])))
       })
 
-      val updatedNotLimited = Some(groupSums.filter(_._2 <= limitAmt).map {
+      val updatedNotLimited: Option[Map[GOut, Seq[ComputedResult[In, POut]]]] = Some(groupSums.filter(_._2 <= limitAmt).map {
         case (k, v) =>
           val amtEa = bucketExcessSum / v
 
@@ -90,6 +93,9 @@ object Computation {
       reduceAndCompute(updatedNotLimited, updatedLimited)
     }
 
-    reduceAndCompute(Some(groups)).get
+    val result: Option[Map[GOut, Seq[ComputedResult[In, POut]]]] = reduceAndCompute(Some(groups))
+
+    if (result.isEmpty) Left(AlgorithmError("Error with computing uniformDistribution"))
+    else Right(result.get)
   }
 }

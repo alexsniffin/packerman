@@ -1,7 +1,7 @@
 package packerman.impl.DistributionStrategy
 
-import packerman.impl.Computation.{Computation, ComputationProps}
-import packerman.impl.{DistributionAlgorithm, Pack}
+import packerman.impl.Computation.{Computation, ComputationProps, DistributionAlgorithm}
+import packerman.impl.Pack
 
 trait DistributionStrategyProps[In, POut <: Double] {
   def distributionStrategy(algorithm: DistributionAlgorithm): ComputationProps[In, POut]

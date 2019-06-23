@@ -2,8 +2,8 @@ package packerman.impl.DistributionStrategy
 
 import org.scalatest.{FlatSpec, GivenWhenThen}
 import packerman.TestClass
-import packerman.impl.Computation.Computation
-import packerman.impl.{Pack, UniformDistribution}
+import packerman.impl.Computation.{Computation, UniformDistribution}
+import packerman.impl.Pack
 
 class DistributionStrategySpec extends FlatSpec with GivenWhenThen {
   info("Running DistributionStrategySpec")

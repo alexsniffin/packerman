@@ -1,7 +1,14 @@
 # packerman
+
+[![Build Status](https://travis-ci.com/alexsniffin/packerman.svg?branch=master)](https://travis-ci.com/alexsniffin/packerman)
+
 This is a lightweight library for basic and general-purpose bin-packing of a collection with arbitrary values.
 
+## Supported Language Version
+- Scala 2.12
+
 ## Usage
+
 The design of this library allows you to define your usage on how to bin-pack your input collection.
 
 ### Example
@@ -26,3 +33,14 @@ val output = packerman match {
 }
 
 ```
+
+## Distribution Strategies
+
+#### Uniform Distribution
+
+Distributes the field specified by `packBy` uniformly from the specified `groupBy` field.
+
+|Parameters|Description|
+|---|---|
+|weighted|Specifies if the field will be adjusted against other groups in the collection when distributed.|
+|limit|Specifies the upper limit of a group for which to distribute. If the `amount of groups * limit < 1`, the limit is too small.|
