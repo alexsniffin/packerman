@@ -21,7 +21,7 @@ val collection = Seq(
     Input("df1662f0aed98c78c192654461afb6f6", 232359110)
   )
 
-val com.alexsniffin.packerman = PackermanEngine(collection)
+val packerman = PackermanEngine(collection)
   .groupBy(x => x.key)
   .packBy(x => x.value)
   .distributionStrategy(UniformDistribution(true, .5))
