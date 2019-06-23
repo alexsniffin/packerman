@@ -1,7 +1,5 @@
 package com.asniffin.packerman
 
-import com.alexsniffin.packerman.impl.Group.{Group, GroupProps}
-import com.alexsniffin.packerman.impl.Pack
 import com.asniffin.packerman.impl.Group.{Group, GroupProps}
 import com.asniffin.packerman.impl.Pack
 

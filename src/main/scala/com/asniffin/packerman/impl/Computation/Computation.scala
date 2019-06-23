@@ -1,7 +1,6 @@
 package com.asniffin.packerman.impl.Computation
 
-import com.alexsniffin.packerman.impl.Error._
-import com.alexsniffin.packerman.impl._
+import com.asniffin.packerman.impl.Error._
 import com.asniffin.packerman.impl.Pack
 
 import scala.annotation.tailrec

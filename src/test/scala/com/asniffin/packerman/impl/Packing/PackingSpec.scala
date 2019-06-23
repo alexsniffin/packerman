@@ -1,9 +1,9 @@
 package com.asniffin.packerman.impl.Packing
 
+import com.asniffin.packerman.TestClass
+import com.asniffin.packerman.impl.DistributionStrategy.DistributionStrategy
+import com.asniffin.packerman.impl.Pack
 import org.scalatest.{FlatSpec, GivenWhenThen}
-import com.alexsniffin.packerman.TestClass
-import com.alexsniffin.packerman.impl.DistributionStrategy.DistributionStrategy
-import com.alexsniffin.packerman.impl.Pack
 
 class PackingSpec extends FlatSpec with GivenWhenThen {
   info("Running PackingSpec")

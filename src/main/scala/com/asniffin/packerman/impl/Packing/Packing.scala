@@ -1,8 +1,7 @@
 package com.asniffin.packerman.impl.Packing
 
-import com.alexsniffin.packerman.impl.DistributionStrategy.{DistributionStrategy, DistributionStrategyProps}
-import com.alexsniffin.packerman.impl.Pack
-import com.asniffin.packerman.impl.DistributionStrategy.DistributionStrategyProps
+import com.asniffin.packerman.impl.DistributionStrategy.{DistributionStrategy, DistributionStrategyProps}
+import com.asniffin.packerman.impl.Pack
 
 trait PackingProps[In] {
   def packBy[POut <: Double](fn: Pack.Packing[In, POut]): DistributionStrategyProps[In, POut]

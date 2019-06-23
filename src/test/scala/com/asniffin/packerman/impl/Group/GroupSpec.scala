@@ -1,9 +1,8 @@
 package com.asniffin.packerman.impl.Group
 
+import com.asniffin.packerman.TestClass
+import com.asniffin.packerman.impl.Pack
 import org.scalatest.{FlatSpec, GivenWhenThen}
-import com.alexsniffin.packerman.TestClass
-import com.alexsniffin.packerman.impl.Pack
-import com.alexsniffin.packerman.impl.Packing.Packing
 import com.asniffin.packerman.impl.Packing.Packing
 
 class GroupSpec extends FlatSpec with GivenWhenThen {
