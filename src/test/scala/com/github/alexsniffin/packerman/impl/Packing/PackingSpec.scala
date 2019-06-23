@@ -1,8 +1,8 @@
-package com.asniffin.packerman.impl.Packing
+package com.github.alexsniffin.packerman.impl.Packing
 
-import com.asniffin.packerman.TestClass
-import com.asniffin.packerman.impl.DistributionStrategy.DistributionStrategy
-import com.asniffin.packerman.impl.Pack
+import com.github.alexsniffin.packerman.TestClass
+import com.github.alexsniffin.packerman.impl.DistributionStrategy.DistributionStrategy
+import com.github.alexsniffin.packerman.impl.Pack
 import org.scalatest.{FlatSpec, GivenWhenThen}
 
 class PackingSpec extends FlatSpec with GivenWhenThen {

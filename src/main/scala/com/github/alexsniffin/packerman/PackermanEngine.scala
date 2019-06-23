@@ -1,7 +1,7 @@
-package com.asniffin.packerman
+package com.github.alexsniffin.packerman
 
-import com.asniffin.packerman.impl.Group.{Group, GroupProps}
-import com.asniffin.packerman.impl.Pack
+import com.github.alexsniffin.packerman.impl.Group.{Group, GroupProps}
+import com.github.alexsniffin.packerman.impl.Pack
 
 object PackermanEngine {
   def apply[In](inputCollection: Seq[In]): GroupProps[In] = {

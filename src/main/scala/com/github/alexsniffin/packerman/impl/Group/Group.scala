@@ -1,7 +1,8 @@
-package com.asniffin.packerman.impl.Group
+package com.github.alexsniffin.packerman.impl.Group
 
-import com.asniffin.packerman.impl.Pack
-import com.asniffin.packerman.impl.Packing.{Packing, PackingProps}
+import com.github.alexsniffin.packerman.impl.Pack
+import com.github.alexsniffin.packerman.impl.Packing.{Packing, PackingProps}
+
 
 trait GroupProps[In] {
   def groupBy[GOut](fn: Pack.Grouping[In, GOut]): PackingProps[In]

@@ -1,8 +1,8 @@
-package com.asniffin.packerman.impl.DistributionStrategy
+package com.github.alexsniffin.packerman.impl.DistributionStrategy
 
-import com.asniffin.packerman.TestClass
-import com.asniffin.packerman.impl.Computation.{Computation, UniformDistribution}
-import com.asniffin.packerman.impl.Pack
+import com.github.alexsniffin.packerman.TestClass
+import com.github.alexsniffin.packerman.impl.Computation.{Computation, UniformDistribution}
+import com.github.alexsniffin.packerman.impl.Pack
 import org.scalatest.{FlatSpec, GivenWhenThen}
 
 class DistributionStrategySpec extends FlatSpec with GivenWhenThen {

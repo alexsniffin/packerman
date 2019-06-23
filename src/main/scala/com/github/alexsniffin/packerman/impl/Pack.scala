@@ -1,6 +1,6 @@
-package com.asniffin.packerman.impl
+package com.github.alexsniffin.packerman.impl
 
-import com.asniffin.packerman.impl.Computation.DistributionAlgorithm
+import com.github.alexsniffin.packerman.impl.Computation.DistributionAlgorithm
 
 trait PackProps[In] {
   val collection: Option[Seq[In]]

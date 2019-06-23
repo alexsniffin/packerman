@@ -1,4 +1,4 @@
-package com.asniffin.packerman.impl
+package com.github.alexsniffin.packerman.impl
 
 package object Computation {
 
