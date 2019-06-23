@@ -1,7 +1,8 @@
-package packerman.impl.Computation
+package com.asniffin.packerman.impl.Computation
 
-import packerman.impl.Error._
-import packerman.impl._
+import com.alexsniffin.packerman.impl.Error._
+import com.alexsniffin.packerman.impl._
+import com.asniffin.packerman.impl.Pack
 
 import scala.annotation.tailrec
 import scala.util.{Failure, Success, Try}

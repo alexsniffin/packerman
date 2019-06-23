@@ -1,4 +1,4 @@
-package packerman.impl
+package com.asniffin.packerman.impl
 
 package object Error {
 

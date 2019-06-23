@@ -1,6 +1,6 @@
-# packerman
+# com.alexsniffin.packerman
 
-[![Build Status](https://travis-ci.com/alexsniffin/packerman.svg?branch=master)](https://travis-ci.com/alexsniffin/packerman)
+[![Build Status](https://travis-ci.com/alexsniffin/com.alexsniffin.packerman.svg?branch=master)](https://travis-ci.com/alexsniffin/com.alexsniffin.packerman)
 
 This is a lightweight library for basic and general-purpose bin-packing of a collection with arbitrary values.
 
@@ -21,13 +21,13 @@ val collection = Seq(
     Input("df1662f0aed98c78c192654461afb6f6", 232359110)
   )
 
-val packerman = PackermanEngine(collection)
+val com.alexsniffin.packerman = PackermanEngine(collection)
   .groupBy(x => x.key)
   .packBy(x => x.value)
   .distributionStrategy(UniformDistribution(true, .5))
   .compute()
 
-val output = packerman match {
+val output = com.alexsniffin.packerman match {
   case Right(result) => result
   case l @ Left(err) => l // handle error
 }
