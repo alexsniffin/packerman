@@ -8,11 +8,13 @@ trait GroupProps[In] {
   def groupBy[GOut](fn: Pack.Grouping[In, GOut]): PackingProps[In]
 }
 
-class Group[In](val pack: Pack[In, _, _ <: Double]) extends GroupProps[In] {
-  def groupBy[GOut](fn: Pack.Grouping[In, GOut]): PackingProps[In] =
-    Packing(pack.copy[In, GOut, Double](groupFn = Some(fn)))
+class Group[In](val pack: Pack[In, _, _]) extends GroupProps[In] {
+  def groupBy[GOut](fn: Pack.Grouping[In, GOut]): PackingProps[In] = {
+    val updated: Pack[In, GOut, _] = Pack.create[In, GOut](pack.collection, Some(fn))
+    Packing(updated)
+  }
 }
 
 object Group {
-  def apply[In](pack: Pack[In, _, _ <: Double]): Group[In] = new Group[In](pack)
+  def apply[In](pack: Pack[In, _, _]): Group[In] = new Group[In](pack)
 }

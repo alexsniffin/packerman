@@ -6,13 +6,13 @@ import com.github.alexsniffin.packerman.impl.Pack
 import scala.annotation.tailrec
 import scala.util.{Failure, Success, Try}
 
-sealed case class ComputedResult[In, POut <: Double](input: In, updatedPackingProp: POut)
+sealed case class ComputedResult[In, POut](input: In, updatedPackingProp: POut)
 
-trait ComputationProps[In, POut <: Double] {
+trait ComputationProps[In, POut] {
   def compute(): Either[Error, Seq[ComputedResult[In, POut]]]
 }
 
-class Computation[In, GOut, POut <: Double](val pack: Pack[In, GOut, POut]) extends ComputationProps[In, POut] {
+class Computation[In, GOut, POut](val pack: Pack[In, GOut, POut])(implicit n: Numeric[POut]) extends ComputationProps[In, POut] {
   def compute(): Either[Error, Seq[ComputedResult[In, POut]]] = pack match {
     case Pack(_, groupFn, packFn, distributeFn) if groupFn.isEmpty || packFn.isEmpty || distributeFn.isEmpty =>
       Left(MissingParametersError("Required parameters are missing from pack"))
@@ -25,16 +25,16 @@ class Computation[In, GOut, POut <: Double](val pack: Pack[In, GOut, POut]) exte
 }
 
 object Computation {
-  def apply[In, GOut, POut <: Double](pack: Pack[In, GOut, POut]): Computation[In, GOut, POut] = new Computation[In, GOut, POut](pack)
+  def apply[In, GOut, POut](pack: Pack[In, GOut, POut])(implicit n: Numeric[POut]): Computation[In, GOut, POut] = new Computation[In, GOut, POut](pack)
 
-  private[packerman] def maxBinPacking[In, GOut, POut <: Double](
+  private[packerman] def maxBinPacking[In, GOut, POut](
       seq: Seq[In],
       groupFn: Pack.Grouping[In, GOut],
       packFn: Pack.Packing[In, POut],
-      distributeAlgorithm: DistributionAlgorithm): Either[Error, Seq[ComputedResult[In, POut]]] = {
+      distributeAlgorithm: DistributionAlgorithm)(implicit n: Numeric[POut]): Either[Error, Seq[ComputedResult[In, POut]]] = {
     val inputMappedSeq = seq.map(in => ComputedResult(in, packFn.apply(in)))
 
-    val sumOfPackValue = seq.map(packFn).reduce[Double](_ + _)
+    val sumOfPackValue: Double = n.toDouble(seq.map(packFn).sum)
 
     val groups: Map[GOut, Seq[ComputedResult[In, POut]]] = inputMappedSeq.groupBy(x => groupFn(x.input))
 
@@ -48,25 +48,25 @@ object Computation {
     }
   }
 
-  private[packerman] def uniformDistribution[In, GOut, POut <: Double](
+  private[packerman] def uniformDistribution[In, GOut, POut](
       weighted: Boolean,
       limit: Double,
       packFn: Pack.Packing[In, POut],
       sumOfPackValue: Double,
-      groups: Map[GOut, Seq[ComputedResult[In, POut]]]): Either[Error, Map[GOut, Seq[ComputedResult[In, POut]]]] = {
+      groups: Map[GOut, Seq[ComputedResult[In, POut]]])(implicit n: Numeric[POut]): Either[Error, Map[GOut, Seq[ComputedResult[In, POut]]]] = {
     if (groups.size * limit < 1) Left(InvalidAlgorithmParameterError(s"Limit parameter is too low, minimal limit: ${(1 / groups.size).toDouble}"))
 
     @tailrec
     def reduceAndCompute(
         notLimited: Option[Map[GOut, Seq[ComputedResult[In, POut]]]],
-        limited: Option[Map[GOut, Seq[ComputedResult[In, POut]]]] = None): Option[Map[GOut, Seq[ComputedResult[In, POut]]]] = {
+        limited: Option[Map[GOut, Seq[ComputedResult[In, POut]]]] = None)(implicit n: Numeric[POut]): Option[Map[GOut, Seq[ComputedResult[In, POut]]]] = {
       if (notLimited.isEmpty || notLimited.get.size == 1) return Some(notLimited.get ++ limited.get)
 
-      val limitAmt = limit * sumOfPackValue
+      val limitAmt: Double = limit * sumOfPackValue
 
       val groupSums: Map[GOut, Double] = groups.map {
         case (k, v) =>
-          val sumOfGroup: Double = v.map(group => packFn(group.input)).reduce[Double](_ + _)
+          val sumOfGroup: Double = n.toDouble(v.map(group => packFn(group.input)).sum)
 
           (k, sumOfGroup)
       }
@@ -77,17 +77,17 @@ object Computation {
 
       val updatedLimited: Option[Map[GOut, Seq[ComputedResult[In, POut]]]] = Some(groupSums.filter(_._2 > limitAmt).map {
         case (k, v) =>
-          val amtOver = v - limitAmt
-          val amtEa = amtOver / v
+          val amtOver: Double = v - limitAmt
+          val amtEa: Double = amtOver / v
 
-          (k, groups(k).map(i => i.copy(updatedPackingProp = (i.updatedPackingProp - amtEa).asInstanceOf[POut])))
+          (k, groups(k).map(i => i.copy(updatedPackingProp = (n.toDouble(i.updatedPackingProp) - amtEa).asInstanceOf[POut])))
       })
 
       val updatedNotLimited: Option[Map[GOut, Seq[ComputedResult[In, POut]]]] = Some(groupSums.filter(_._2 <= limitAmt).map {
         case (k, v) =>
-          val amtEa = bucketExcessSum / v
+          val amtEa: Double = bucketExcessSum / v
 
-          (k, groups(k).map(i => i.copy(updatedPackingProp = (i.updatedPackingProp + amtEa).asInstanceOf[POut])))
+          (k, groups(k).map(i => i.copy(updatedPackingProp = (n.toDouble(i.updatedPackingProp) + amtEa).asInstanceOf[POut])))
       })
 
       reduceAndCompute(updatedNotLimited, updatedLimited)

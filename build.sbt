@@ -1,6 +1,6 @@
 name := "packerman"
 
-version := "0.3.0-RC1"
+version := "0.4.0-M1"
 
 scalaVersion := "2.12.8"
 
