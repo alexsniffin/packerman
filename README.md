@@ -1,4 +1,4 @@
-# com.alexsniffin.packerman
+# packerman
 
 [![Build Status](https://travis-ci.com/alexsniffin/packerman.svg?branch=master)](https://travis-ci.com/alexsniffin/packerman)
 
