@@ -1,6 +1,6 @@
 # com.alexsniffin.packerman
 
-[![Build Status](https://travis-ci.com/alexsniffin/com.alexsniffin.packerman.svg?branch=master)](https://travis-ci.com/alexsniffin/com.alexsniffin.packerman)
+[![Build Status](https://travis-ci.com/alexsniffin/packerman.svg?branch=master)](https://travis-ci.com/alexsniffin/packerman)
 
 This is a lightweight library for basic and general-purpose bin-packing of a collection with arbitrary values.
 
