@@ -9,7 +9,7 @@ import scala.util.{Failure, Success, Try}
 
 sealed case class ComputedResult[In, POut <: Double](input: In, updatedPackingProp: POut)
 
-trait ComputationProps[In, POut] {
+trait ComputationProps[In, POut <: Double] {
   def compute(): Either[Error, Seq[ComputedResult[In, POut]]]
 }
 
@@ -62,14 +62,14 @@ object Computation {
       val limitAmt = limit * sumOfPackValue
 
       val groupSums: Map[GOut, Double] = groups.map {
-        case (k: GOut, v: Seq[In]) =>
+        case (k, v: Seq[In]) =>
           val sumOfGroup: Double = v.map(group => packFn(group.input)).reduce[Double](_ + _)
 
           (k, sumOfGroup)
       }
 
       val bucketExcessSum: Double = groupSums.filter(_._2 > limitAmt).map {
-        case (_: GOut, v: Double) => v - limitAmt
+        case (_, v: Double) => v - limitAmt
       }.sum
 
       val updatedLimited = Some(groupSums.filter(_._2 > limitAmt).map {
