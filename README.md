@@ -2,10 +2,15 @@
 
 [![Build Status](https://travis-ci.com/alexsniffin/packerman.svg?branch=master)](https://travis-ci.com/alexsniffin/packerman)
 
-This is a lightweight library for basic and general-purpose bin-packing of a collection with arbitrary values.
+This is a lightweight library for general purpose bin-packing of a collection with arbitrary values.
 
 ## Supported Language Version
 - Scala 2.12
+
+### SBT
+```scala
+libraryDependencies += "com.github.alexsniffin" %% "packerman" % version
+```
 
 ## Usage
 
@@ -24,7 +29,7 @@ val collection = Seq(
 val packerman = PackermanEngine(collection)
   .groupBy(x => x.key)
   .packBy(x => x.value)
-  .distributionStrategy(UniformDistribution(true, .5))
+  .distributionStrategy(UniformDistribution(weighted = true, .5))
   .compute()
 
 val output = packerman match {
